@@ -147,15 +147,26 @@ jobs:
         run: |
           cd $HOME/fox
           P=device/xiaomi/malachite/patches/0001-minuitwrp-skip-unavailable-aidl-haptics.patch
-          if git -C bootable/recovery apply --check "$P"; then
-            git -C bootable/recovery apply "$P"
+          if git -C bootable/recovery apply --check "$PWD/$P"; then
+            git -C bootable/recovery apply "$PWD/$P"
             echo "Haptics patch applied"
-          elif git -C bootable/recovery apply --check --3way "$P"; then
-            git -C bootable/recovery apply --3way "$P"
+          elif git -C bootable/recovery apply --check --3way "$PWD/$P"; then
+            git -C bootable/recovery apply --3way "$PWD/$P"
             echo "Haptics patch applied with a 3way merge"
           else
             echo "::warning::Haptics patch does not apply to this bootable/recovery revision, continuing without it"
           fi
+
+      - name: Apply the flashlight toggle patch
+        run: |
+          cd $HOME/fox
+          P=device/xiaomi/malachite/patches/0002-flashlight-toggle-by-saved-state.patch
+          git -C bootable/recovery apply "$PWD/$P" && echo "Flashlight patch applied" || echo "::warning::Flashlight patch does not apply"
+
+      - name: Use the maintainer avatar
+        run: |
+          cd $HOME/fox
+          cp device/xiaomi/malachite/recovery/maintainer/maintainer.png bootable/recovery/gui/theme/portrait_hdpi/images/Default/About/maintainer.png
 
       - name: Free disk space in the source tree
         run: |
@@ -174,6 +185,8 @@ jobs:
           export FOX_BUILD_DEVICE=malachite
           export OF_DEFAULT_KEYMASTER_VERSION=4.1
           export FOX_VIRTUAL_AB_DEVICE=1
+          export FOX_VENDOR_BOOT_RECOVERY=1
+          export FOX_INSTALLER_VENDOR_BOOT_RAMDISK_INSTALL=1
           if [ "$PERM" = "true" ]; then export MALACHITE_RECOVERY_PERMISSIVE=true; fi
           df -h "$HOME/fox" "$OUT_DIR" || df -h "$HOME/fox"
           free -h
