@@ -163,6 +163,11 @@ jobs:
           P=device/xiaomi/malachite/patches/0002-flashlight-toggle-by-saved-state.patch
           git -C bootable/recovery apply "$PWD/$P" && echo "Flashlight patch applied" || echo "::warning::Flashlight patch does not apply"
 
+      - name: Use the maintainer avatar
+        run: |
+          cd $HOME/fox
+          cp device/xiaomi/malachite/recovery/maintainer/maintainer.png bootable/recovery/gui/theme/portrait_hdpi/images/Default/About/maintainer.png
+
       - name: Free disk space in the source tree
         run: |
           cd $HOME/fox
