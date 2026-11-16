@@ -167,3 +167,4 @@ TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone7/temp"
 TW_BATTERY_SYSFS_WAIT_SECONDS := 6
 OF_FLASHLIGHT_ENABLE := 1
 OF_FL_PATH1 := /sys/class/leds/torch-light0
+BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
