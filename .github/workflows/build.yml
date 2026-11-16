@@ -161,7 +161,8 @@ jobs:
         run: |
           cd $HOME/fox
           P=device/xiaomi/malachite/patches/0002-flashlight-toggle-by-saved-state.patch
-          git -C bootable/recovery apply "$PWD/$P" && echo "Flashlight patch applied" || echo "::warning::Flashlight patch does not apply"
+          git -C bootable/recovery apply "$PWD/$P" || { echo "::error::Flashlight patch does not apply"; exit 1; }
+          echo "Flashlight patch applied"
 
       - name: Use the maintainer avatar
         run: |
@@ -233,9 +234,12 @@ jobs:
             tail -50 $HOME/build.log || true
             exit 1
           fi
-          cp "$OUT/vendor_boot.img" "$GITHUB_WORKSPACE/output/vendor_boot.img"
-          find "$OUT" -maxdepth 1 -name "OrangeFox*.zip" -exec cp {} "$GITHUB_WORKSPACE/output/" \; || true
-          find "$OUT" -maxdepth 1 -name "OrangeFox*.img" -exec cp {} "$GITHUB_WORKSPACE/output/" \; || true
+          # vendor_boot.img is not shipped: it has no kernel modules and stops the ROM from booting if flashed
+          find "$OUT" -maxdepth 1 -name "OrangeFox*.zip" -exec cp {} "$GITHUB_WORKSPACE/output/" \;
+          if ! ls "$GITHUB_WORKSPACE"/output/OrangeFox*.zip >/dev/null 2>&1; then
+            echo "::error::The OrangeFox zip was not produced"
+            exit 1
+          fi
           cd "$GITHUB_WORKSPACE/output"
           sha256sum $(ls | grep -v SHA256SUMS.txt) > SHA256SUMS.txt
           ls -lh

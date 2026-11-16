@@ -8,7 +8,6 @@ ro.crypto.volume.filenames_mode=aes-256-cts
 
 ro.vendor.mediatek.platform=MT6878
 
-persist.sys.timezone=Asia/Shanghai
 
 external_storage.projid.enabled=1
 external_storage.casefold.enabled=1
