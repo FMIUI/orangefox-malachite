@@ -1,0 +1,13 @@
+diff --git a/gui/action.cpp b/gui/action.cpp
+index bd5da25..8295a18 100644
+--- a/gui/action.cpp
++++ b/gui/action.cpp
+@@ -2649,7 +2649,7 @@ int GUIAction::flashlightImpl(std::string arg __unused)
+ 			if (TWFunc::Path_Exists(bright_one)) {
+ 				TWFunc::read_file(bright_one, fl_one_on);
+ 				// If we use flashlight first time after reboot, always enable it
+-				if (fl_one_on == "0" || fl_used == "0") {
++				if (fl_used != "1") { // malachite: the LED driver always reads back 0, so toggle by saved state
+ 					TWFunc::write_to_file(bright_one, max_brt_one);
+           DataManager::SetValue("of_flash_on", "1");
+ 				} else {
